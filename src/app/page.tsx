@@ -3,15 +3,19 @@ import * as d3 from "d3";
 import { data } from "./data";
 import { us } from "./us";
 import * as topojson from "topojson";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { br } from "./br-data";
 
 export default function Home() {
   useEffect(() => {
-    const width: any = 800;
-    const height: any = 800;
+    const width: any = 863;
+    const height: any = 647;
 
-    const zoom = d3.zoom().scaleExtent([1, 8]).on("zoom", zoomed);
+    // const zoom = d3.zoom().scaleExtent([1, 50]).on("zoom", zoomed);
+    var projection = d3
+      .geoIdentity()
+      .reflectY(true)
+      .fitSize([width, height], topojson.feature(br, br.objects["14"]));
 
     const svg: any = d3
       .create("svg")
@@ -21,12 +25,12 @@ export default function Home() {
       .attr("style", "max-width: 100%; height: auto;");
     // .on("click", reset);
 
-    const path: any = d3.geoPath();
+    const path: any = d3.geoPath().projection(projection);
 
     const g: any = svg.append("g");
 
     /////////////////////////////////////////////////////////
-    const data: any = topojson.feature(br, br.objects["12"]);
+    const data: any = topojson.feature(br, br.objects["14"]);
     /////////////////////////////////////////////////////////
 
     g.append("g")
@@ -35,7 +39,7 @@ export default function Home() {
       .selectAll("path")
       .data(data.features)
       .join("path")
-      .on("click", clicked)
+      // .on("click", clicked)
       .attr("d", path);
 
     const states = g
@@ -45,7 +49,7 @@ export default function Home() {
       .selectAll("path")
       .data(data.features)
       .join("path")
-      .on("click", clicked)
+      // .on("click", clicked)
       .attr("d", path);
 
     states.append("title").text((d: any) => d.properties.name);
@@ -55,41 +59,41 @@ export default function Home() {
       .attr("stroke", "white")
       .attr("stroke-width", 0.2)
       .attr("stroke-linejoin", "round")
-      .attr("d", path(topojson.mesh(br, br.objects["12"], (a, b) => a !== b)));
+      .attr("d", path(topojson.mesh(br, br.objects["14"], (a, b) => a !== b)));
 
-    svg.call(zoom);
+    // svg.call(zoom);
 
-    function reset() {
-      states.transition().style("fill", null);
-      svg
-        .transition()
-        .duration(750)
-        .call(
-          zoom.transform,
-          d3.zoomIdentity,
-          d3.zoomTransform(svg.node()).invert([width / 2, height / 2])
-        );
-    }
+    // function reset() {
+    //   states.transition().style("fill", null);
+    //   svg
+    //     .transition()
+    //     .duration(750)
+    //     .call(
+    //       zoom.transform,
+    //       d3.zoomIdentity,
+    //       d3.zoomTransform(svg.node()).invert([width / 2, height / 2])
+    //     );
+    // }
 
-    function clicked(event: any, d: any) {
-      const [[x0, y0], [x1, y1]] = path.bounds(d);
-      event.stopPropagation();
-      states.transition().style("fill", null);
-      // d3.select(this).transition().style("fill", "red");
-      svg
-        .transition()
-        .duration(750)
-        .call(
-          zoom.transform,
-          d3.zoomIdentity
-            .translate(width / 2, height / 2)
-            .scale(
-              Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height))
-            )
-            .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
-          d3.pointer(event, svg.node())
-        );
-    }
+    // function clicked(event: any, d: any) {
+    //   const [[x0, y0], [x1, y1]] = path.bounds(d);
+    //   event.stopPropagation();
+    //   states.transition().style("fill", null);
+    //   d3.select(this).transition().style("fill", "red");
+    //   svg
+    //     .transition()
+    //     .duration(750)
+    //     .call(
+    //       zoom.transform,
+    //       d3.zoomIdentity
+    //         .translate(width / 2, height / 2)
+    //         .scale(
+    //           Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height))
+    //         )
+    //         .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
+    //       d3.pointer(event, svg.node())
+    //     );
+    // }
 
     function zoomed(event: any) {
       const { transform } = event;
@@ -102,5 +106,17 @@ export default function Home() {
     mapa.append(svg.node());
   }, []);
 
-  return <div id="map"></div>;
+  return (
+    <div
+      style={{
+        width: "100%",
+        backgroundColor: "black",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <div id="map"></div>
+    </div>
+  );
 }
