@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mdi/js": "^7.4.47",
+    "@mdi/react": "^1.6.1",
     "@types/d3": "^7.4.3",
     "d3": "^7.8.5",
     "leaflet": "^1.9.4",
