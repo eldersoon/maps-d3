@@ -7,8 +7,9 @@ import * as topojson from "topojson";
 import { useCallback, useEffect } from "react";
 import { br } from "./br-data";
 import { states } from "./states";
-import Icon from '@mdi/react';
 import { mdiMapMarkerRadius, mdiFileChart, mdiCompare, mdiCharity  } from '@mdi/js';
+import { Card, Typography, CardContent, CardActions, IconButton  } from '@mui/material';
+import Icon from '@mdi/react';
 
 export default function Home() {
   useEffect(() => {
@@ -131,31 +132,31 @@ export default function Home() {
         justifyContent: "center",
       }}
     >
-      <div className="card-map">
-        <div className="row-title">
+      <Card sx={{ width: 690, height: "auto", boxShadow: "none", border: "1px solid #DCDDE6" }}>
+        <Typography variant="h3" sx={{ fontSize: "16px", fontWeight: 600, color: "#252833", display: "flex", justifyContent: "start", alignItems: "center", padding: "15px 15px 0 15px" }} >
           <Icon path={mdiMapMarkerRadius} size={0.8} className="icon-option" />
-          <h4 className="title-geo">
-            Geoanálise
-          </h4>
-        </div>
-        <div className="row-options">
-          <button className="select-option">
+          Geoanálise
+        </Typography>
+        <CardActions>
+          <IconButton sx={{ fontSize: "14px", fontWeight: 500, color: "#252833" }}>
             Visualizar
-          </button>
-          <button className="select-option">
-            <Icon path={mdiFileChart} size={0.7} className="icon-option" />
+          </IconButton>
+          <IconButton sx={{ fontSize: "14px", fontWeight: 500, color: "#252833" }}>
+            <Icon path={mdiFileChart} size={0.6} className="icon-option" />
             Escore
-          </button>
-          <button className="select-option">
-            <Icon path={mdiCompare} size={0.7} className="icon-option" />
+          </IconButton>
+          <IconButton sx={{ fontSize: "14px", fontWeight: 500, color: "#252833" }}>
+            <Icon path={mdiCompare} size={0.6} className="icon-option" />
             Comparativo
-          </button>
-          <button className="select-option">
-            <Icon path={mdiCharity} size={0.7} className="icon-option" />
+          </IconButton>
+          <IconButton sx={{ fontSize: "14px", fontWeight: 500, color: "#252833" }}>
+            <Icon path={mdiCharity} size={0.6} className="icon-option" />
             Avaliados no Programa
-          </button>
-        </div>
-        <div className="map" id="map"></div>
+          </IconButton>
+        </CardActions>
+        <CardContent sx={{ padding: "0 15px" }}>
+          <div id="map" className="map"></div>
+        </CardContent>
         <div className="legend">
           <div className="col-title">
             <h5 className="title-legend">Legenda</h5>
@@ -175,7 +176,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

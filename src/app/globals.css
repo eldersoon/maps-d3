@@ -14,43 +14,9 @@
     padding: 15px;
 }
 
-.row-title {
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-    height: 20px;
-    padding: 15px;
-}
-
-.row-options {
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-    height: 35px;
-    padding: 0 0 15px 7px;
-}
-
-.select-option {
-    width: auto;
-    height: 100%;
-    padding: 10px 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background: none;
-}
-
 .icon-option {
     margin-right: 6px;
     margin-bottom: 1px;
-}
-
-.title-geo {
-    margin: 0;
-    margin-left: 5px;
 }
 
 .col-title {
@@ -76,11 +42,10 @@
 .map {
     background-color: #CBCBCB;
     border-radius: 5px;
-    padding-right: 20%;
+    /* padding-right: 20%; */
     height: 500px;
     display: flex;
     align-items: center;
-    margin: 0 15px;
 }
 
 .block1 {
