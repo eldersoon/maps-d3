@@ -11,6 +11,7 @@ import { mdiMapMarkerRadius, mdiFileChart, mdiCompare, mdiCharity  } from '@mdi/
 import { Card, Typography, CardContent, CardActions, IconButton  } from '@mui/material';
 import Icon from '@mdi/react';
 import { cities } from "./cities";
+import { county } from "./county";
 
 export default function Home() {
   useEffect(() => {
@@ -19,21 +20,14 @@ export default function Home() {
     const colorsCustom = ["#71D46C", "#EBBB07", "#D43230"];
     const color: any = d3.scaleSequential().domain([1, 27])
       .interpolator(d3.interpolateRgbBasis(colorsCustom));
-    const valuemap = new Map(states.map((d: { id: string, region: number }, index: number) => [d.id, d.region]));
-    const valuemapState = new Map(states.map((d: { id: string, value: number }, index: number) => [d.id, d.value]));
-    const citiesFiltred = new Map(cities.map((d: { id: string, uf: string, data: any }) => [d.id, d.data, d.uf]))
+    const valuemap = new Map(states.map((d: { id: string, region: number }) => [d.id, d.region]));
 
     const zoom = d3.zoom().scaleExtent([1, 8]).on("zoom", zoomed);
 
     var projection = d3
       .geoIdentity()
       .reflectY(true)
-      .fitSize([width, height], topojson.feature(br, br.objects.uf));
-
-    // var projectionState = d3
-    //   .geoIdentity()
-    //   .reflectY(true)
-    //   .fitSize([width, height], topojson.feature(cities, ));
+      .fitSize([width, height], topojson.feature(br, br.objects.estados));
 
     const svg: any = d3
       .create("svg")
@@ -44,25 +38,8 @@ export default function Home() {
       .on("click", reset);
 
     const path: any = d3.geoPath().projection(projection);
-    // const pathState: any = d3.geoPath().projection(projectionState);
 
-    /////////////////////////////////////////////////////////
-    const data: any = topojson.feature(br, br.objects.uf);
-    // const dataState: any = topojson.feature(statesJson.PA, statesJson.PA.objects["15"]);
-    /////////////////////////////////////////////////////////
-
-    // const statesTransition = g.append("g")
-    //     .attr("fill", "#444")
-    //     .attr("cursor", "pointer")
-    //   .selectAll("path")
-    //   .data(data.features)
-    //   .join("path")
-    //     .on("click", clicked)
-    //     .attr("d", path);
-
-    // svg.append("g")
-    //   .attr("transform", "translate(610,20)")
-    //   .append(() => Legend(color, {title: "Unemployment rate (%)", width: 260}));
+    const data: any = topojson.feature(br, br.objects.estados);
 
     const g: any = svg.append("g");
 
@@ -80,10 +57,10 @@ export default function Home() {
           .attr("fill", (d: any) => color(valuemap.get(d.id)))
           .on("click", clicked)
           .attr("d", path)
-        .append("title").text((d: any) => `${d.properties.name}\n${valuemap.get(d.id)}`);
+        .append("title").text((d: any) => `${d.properties.nome}\n${valuemap.get(d.id)}`);
     
       statesTransition.append("path")
-        .datum(topojson.mesh(br, br.objects.uf, (a, b) => a !== b))
+        .datum(topojson.mesh(br, br.objects.estados, (a, b) => a !== b))
         .attr("fill", "none")
         .attr("stroke", "white")
         .attr("stroke-linejoin", "round")
@@ -93,7 +70,7 @@ export default function Home() {
           .attr("fill", "none")
           .attr("stroke", "white")
           .attr("stroke-linejoin", "round")
-          .attr("d", path(topojson.mesh(br, br.objects.uf, (a, b) => a !== b)));
+          .attr("d", path(topojson.mesh(br, br.objects.estados, (a, b) => a !== b)));
       svg
         .transition()
         .duration(750)
@@ -106,26 +83,31 @@ export default function Home() {
 
     function clicked(event: any, d: any) {
       const [[x0, y0], [x1, y1]] = path.bounds(d);
-      const citiesSelected = cities.filter((uf: any) => uf.uf === d.id)[0]
+      const citiesSelected: any = cities.filter((uf: any) => uf.uf === d.id)[0]
+      const dataFeatureCities: any = topojson.feature(citiesSelected["data"], citiesSelected["data"].objects[citiesSelected.id])
+      const valuemapState = new Map(county.map((b: { cod: number, valor: number }) => [b.cod, b.valor]));
+      const namemapState = new Map(county.map((b: { cod: number, nome: string }) => [b.cod, b.nome]));
+      console.log(valuemapState)
       event.stopPropagation();
       reset()
       g.selectAll("path").style("fill", "#BEC0CC");
-      // d3.select(this).transition().style("fill", "green");
+      
+      g.append("g")
+        .attr("fill", "#444")
+        .attr("cursor", "pointer")
+        .selectAll("path")
+        .data(dataFeatureCities.features)
+        .join("path")
+          .attr("fill", (a: any) => color(valuemapState.get(a.properties.cod)))
+          .on("click", clicked)
+          .attr("d", path)
+        .append("title").text((a: any) => `${namemapState.get(a.properties.cod)}\n${valuemapState.get(a.properties.cod)}`);
+
       g.append("path")
         .attr("fill", "none")
         .attr("stroke", "white")
         .attr("stroke-linejoin", "round")
         .attr("d", path(topojson.mesh(citiesSelected["data"], citiesSelected["data"].objects[citiesSelected.id], (a, b) => a !== b)));
-      // d3.select(this).append("g")
-      //   .attr("fill", "#444")
-      //   .attr("cursor", "pointer")
-      //   .selectAll("path")
-      //   .data(dataState.features)
-      //   .join("path")
-      //     .attr("fill", (d: any) => color(valuemapState.get(d.id)))
-      //     .on("click", clicked)
-      //     .attr("d", path)
-      //   .append("title").text((d: any) => `${d.properties.cod}`);
       svg
         .transition()
         .duration(750)
