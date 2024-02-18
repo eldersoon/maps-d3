@@ -42,10 +42,9 @@
 .map {
     background-color: #CBCBCB;
     border-radius: 5px;
-    /* padding-right: 20%; */
     height: 500px;
     display: flex;
-    align-items: center;
+    align-items: start;
 }
 
 .block1 {
