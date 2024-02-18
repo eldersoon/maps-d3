@@ -98,7 +98,6 @@ export default function Home() {
           .attr("stroke-linejoin", "round")
           .attr("d", path(dataBorder));
 
-          console.log("testeee Map")
     }
 
     function zoomIn() {
